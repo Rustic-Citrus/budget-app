@@ -70,8 +70,14 @@ class Category:
 
 
 def create_spend_chart(categories):
-    # Count the withdrawals in each category.
+    # Create the list of output lines.
+    output = []
+
+    # Assign the names of the categories to a list.
     category_names = [category.__name__ for category in categories]
+
+    # Find the subtotal of withdrawals for each category and append the 
+    # subtotals to a list.
     subtotals = []
     for category in categories:
         subtotal = 0
@@ -80,15 +86,20 @@ def create_spend_chart(categories):
                 subtotal += abs(transaction["amount"])
         subtotals.append(subtotal)
     
-    # Add the subtotals up and add percentages to a dictionary with category 
-    # names.
+    # Find the sum of the subtotals and assign to a variable.
     total = sum(subtotals)
+
+    # Convert the subtotals to percentages of the total expenses.
     subtotal_pcts = [round((subtotal / total), 1) * 100 for subtotal in subtotals]
 
-    print("Percentage spent by category")
+    # Add the plot title to the output.
+    output.append("Percentage spent by category")
+
+    # Create the plot and the y-axis labels.
     y_axis = [list(((3 - len(str(n))) * " ") + str(n) + "|" + (" " * (len(subtotal_pcts) * 3)) + (" " * 3)) for n in range(100, -10, -10)]
     plot = [list(((3 - len(str(n))) * " ") + str(n) + "|" + (" " * (len(subtotal_pcts) * 3)) + (" " * 3)) for n in range(100, -10, -10)]
 
+    # Plot the percentages as bar graphs of 'o' symbols.
     offset = 5
     for pct in subtotal_pcts:
         for y in y_axis:
@@ -96,22 +107,38 @@ def create_spend_chart(categories):
                 for row in y_axis[y_axis.index(y):]:
                     plot[y_axis.index(row)][offset + (subtotal_pcts.index(pct) * 3)] = "o"
 
+    # Add the rows of the plot to the output.
     for row in plot:
-        print("".join(row))
+        output.append("".join(row))
 
+    # Create the separator string and add it to the output.
     separator = "    " + ("---" * len(category_names)) + "-"
-    print(separator)
+    output.append(separator)
 
+    # Convert the category names into lists of characters.
     letters = [list(category) for category in category_names]
+
+    # Find the length of each word.
     word_lengths = [len(category) for category in category_names]
+
+    # Find the longest word and fill the difference in each word with spaces.
     for word in letters:
         while len(word) < max(word_lengths):
             word.append(" ")
+
+    # Convert the category names into vertical labels.
     lines = list()
     for index in range(max(word_lengths)):
         line = "   "
         for word in letters:
             line += ("  " + word[index])
         lines.append(line)
+
+    # Add the vertical label rows to the output
     for line in lines:
-        print(line)
+        output.append(line)
+
+    # Convert the output to a string and join on a line break.
+    output = "\n".join(output)
+
+    return output
