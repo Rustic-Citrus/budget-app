@@ -4,17 +4,15 @@
 # category. The class should have an instance variable called ledger that is a
 # list.
 
-categories = []
-
 class Category:
     def __init__(self, category):
         self.ledger = []
-        self.__name__ = category
+        self.name = category
 
     def __str__(self):
         lines = []
-        asterisks = "*" * round((30 - len(self.__name__)) / 2)
-        title = f"{asterisks}{self.__name__}{asterisks}"
+        asterisks = "*" * round((30 - len(self.name)) / 2)
+        title = f"{asterisks}{self.name}{asterisks}"
         lines.append(title)
         balance_str = format(self.get_balance(), ".2f")
         for transaction in self.ledger:
@@ -49,23 +47,21 @@ class Category:
 
     def transfer(self, amount, category):
         """A transfer method that accepts an amount and another budget category as arguments. The method should add a withdrawal with the amount and the description "Transfer to [Destination Budget Category]". The method should then add a deposit to the other budget category with the amount and the description "Transfer from [Source Budget Category]". If there are not enough funds, nothing should be added to either ledgers. This method should return True if the transfer took place, and False otherwise."""
-        description_withdraw = f"Transfer to {category.__name__}"
-        description_deposit = f"Transfer from {self.__name__}"
-        try:
-            if self.check_funds(amount):
-                self.withdraw(amount, description_withdraw)
-                category.deposit(amount, description_deposit)
-                return True
-            else:
-                return False
-        except:
+        description_withdraw = f"Transfer to {category.name}"
+        description_deposit = f"Transfer from {self.name}"
+        if self.check_funds(amount):
+            self.withdraw(amount, description_withdraw)
+            category.deposit(amount, description_deposit)
+            return True
+        else:
             return False
+
 
     def check_funds(self, amount):
         """A check_funds method that accepts an amount as an argument. It returns False if the amount is greater than the balance of the budget category and returns True otherwise. This method should be used by both the withdraw method and transfer method."""
         if (self.get_balance() - amount) < 0:
             return False
-        elif (self.get_balance() - amount) >= 0:
+        else:
             return True 
 
 
@@ -74,7 +70,7 @@ def create_spend_chart(categories):
     output = []
 
     # Assign the names of the categories to a list.
-    category_names = [category.__name__ for category in categories]
+    category_names = [category.name for category in categories]
 
     # Find the subtotal of withdrawals for each category and append the 
     # subtotals to a list.
