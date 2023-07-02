@@ -90,7 +90,7 @@ def create_spend_chart(categories):
     total = sum(subtotals)
 
     # Convert the subtotals to percentages of the total expenses.
-    subtotal_pcts = [round((subtotal / total), 1) * 100 for subtotal in subtotals]
+    subtotal_pcts = [int((subtotal / total) * 10) * 10 for subtotal in subtotals]
 
     # Add the plot title to the output.
     output.append("Percentage spent by category")
